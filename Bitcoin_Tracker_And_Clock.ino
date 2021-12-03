@@ -1,5 +1,5 @@
-//Bitcoin Tracker and Clock V0.1
-//18-11-2021
+//Bitcoin Tracker and Clock V2.0
+//03-12-2021
 //Robert James Hastings
 //117757785@umail.ucc.ie
 
@@ -13,6 +13,10 @@
    #      important for when Bitcoin exceeds $100,000.           # 
    #      Current version will only display time and date on     #
    #      the hour (exp 14:00).                                  #
+   #      V2 will now dim the display between the hours of       #
+   #      1am - 8am and will supress the                         #
+   #      Pulse_Display_Brightness() function during these       #
+   #      hours                                                  #
    ###############################################################
 */
 
@@ -37,8 +41,8 @@ MD_Parola myDisplay = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 
 //________________Declaring Variables__________
 const char* host = "api.coindesk.com";
-const char* ssid     = "XXXXXXXXXXX";
-const char* password = "XXXXXXXXXXX";
+const char* ssid     = "VM5190883";
+const char* password = "CXb3cvk2dpea";
 const char * c;
 String previous_non_zero_price = "JSON NOT FOUND";
 String previous_non_zero_time_and_date = "JSON NOT FOUND";
@@ -54,6 +58,8 @@ int timeIndex;
 String timeString;
 String time24hr;
 String new_hour;
+int current_hour;
+bool pulse_brightness;
 
 //____________________Setup__________________________
 //********************************************************************************
@@ -71,7 +77,7 @@ void setup() {
     myDisplay.print("Bitcoin");
     Pulse_Display_Brightness();
     myDisplay.setIntensity(5);
-    delay(500);
+    delay(50);
     
 //____________________Establish Wifi Connection__________________________
   WiFi.begin(ssid, password);
@@ -88,6 +94,9 @@ void setup() {
     myDisplay.setInvert(false);
     Display_Scroll_Text("Starting, please wait", 60);
     myDisplay.displayClear();
+     myDisplay.setTextAlignment(PA_CENTER);
+     myDisplay.setInvert(false);
+     myDisplay.print("......");
 }
 
 
@@ -97,6 +106,7 @@ void loop() {
   
  Get_JSON_Data();
  Get_Data_From_JSON();
+ myDisplay.displayClear();
  Main_Logic_Tree();
  
 }
@@ -125,17 +135,28 @@ void Display_Scroll_Text(String text_to_scroll, int timedelay){
 //********************************************************************************
 void Pulse_Display_Brightness(){
   
+if (pulse_brightness)
+ {
+  int n;
   myDisplay.setIntensity(0);
-  for(int n=0; n<14; ++n){
+  for(n=0; n<14; ++n){
       myDisplay.setIntensity(n);
       delay(200);
     }
-    for(int n=15; n>5; --n){
+    for(n=14; n>1; --n){
+      myDisplay.setIntensity(n);
+      delay(200);
+    }
+    for(n=0; n<5; ++n){
       myDisplay.setIntensity(n);
       delay(200);
     }
     myDisplay.setIntensity(5);
-    
+   }
+   else
+   {
+    delay(2000);
+   }
 }
 
 //____________________Get Json Data From Coindesk__________________________
@@ -193,20 +214,31 @@ void Get_Data_From_JSON(){
   // Get time
   timeIndex = jsonAnswer.indexOf("time");
   timeString = jsonAnswer.substring(timeIndex + 18, timeIndex + 39);
-  time24hr = jsonAnswer.substring(timeIndex + 31, timeIndex + 36);
-  new_hour = jsonAnswer.substring(timeIndex + 34, timeIndex + 36);
+  time24hr = jsonAnswer.substring(timeIndex + 30, timeIndex + 35);
+  new_hour = jsonAnswer.substring(timeIndex + 33, timeIndex + 35);
+  current_hour = (jsonAnswer.substring(timeIndex + 30, timeIndex + 31)).toInt();
   
 }
 
 //____________________Decision Tree For Displaying Data__________________________
 //********************************************************************************
 void Main_Logic_Tree(){
-  
+
+if(current_hour >= 1 || current_hour <= 7){
+  myDisplay.setIntensity(0);
+  pulse_brightness = false;
+}
+else{
+  myDisplay.setIntensity(5);
+   pulse_brightness = true;
+}
+  myDisplay.displayClear();
   check_zero = (int)price; //check if Coindesk returns a zero value and defer to previous non zero reply if true
     if(check_zero > 0){
       if(new_hour == "00"){
             Display_Scroll_Text(timeString, 65);           
       }
+      myDisplay.displayClear();
       myDisplay.print(time24hr);
       Pulse_Display_Brightness();
       delay(250);
@@ -214,7 +246,7 @@ void Main_Logic_Tree(){
       previous_non_zero_time_24 = time24hr;
       delay(2500);
       
-      
+      myDisplay.displayClear();
       Display_Scroll_Text("USD $" + priceString, 44);
       previous_non_zero_price = priceString;
       myDisplay.setTextAlignment(PA_CENTER);
@@ -224,15 +256,17 @@ void Main_Logic_Tree(){
          if(new_hour == "00"){
              Display_Scroll_Text(previous_non_zero_time_and_date, 65);
          }
+      myDisplay.displayClear();
       myDisplay.print(previous_non_zero_time_24);
       Pulse_Display_Brightness(); 
       delay(250);
       
-      
+      myDisplay.displayClear();
       Display_Scroll_Text("USD $ " + previous_non_zero_price, 44);
       myDisplay.setTextAlignment(PA_CENTER);
+      myDisplay.displayClear();
       myDisplay.print(previous_non_zero_price);
-      delay(1000);
+      delay(1200);
     } 
    delay(50);
    
