@@ -224,7 +224,7 @@ void Get_Data_From_JSON(){
 //********************************************************************************
 void Main_Logic_Tree(){
 
-if(current_hour >= 1 || current_hour <= 7){
+if(current_hour >= 1 && current_hour <= 7){
   myDisplay.setIntensity(0);
   pulse_brightness = false;
 }
