@@ -41,8 +41,8 @@ MD_Parola myDisplay = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 
 //________________Declaring Variables__________
 const char* host = "api.coindesk.com";
-const char* ssid     = "VM5190883";
-const char* password = "CXb3cvk2dpea";
+const char* ssid     = "xxxxxxxxxxxx";
+const char* password = "xxxxxxxxxxxx";
 const char * c;
 String previous_non_zero_price = "JSON NOT FOUND";
 String previous_non_zero_time_and_date = "JSON NOT FOUND";
