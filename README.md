@@ -1,5 +1,7 @@
 # Bitcoin Tracker and Clock v5
 
+![bitclock_ani (1)](https://github.com/CountZero1066/Bitcoin-Tracker-and-Clock/assets/32957102/baf71995-f1fb-4dd9-848c-cda52f265354)
+
 # Description
 This project is designed for use with the ESP8266 microcontroller and the AZDelivery MAX7219 LED Dot Matrix Display. It functions as a Bitcoin price tracker, displaying real-time updates and the current time and date. The display brightness pulsates for a visual effect.
 
