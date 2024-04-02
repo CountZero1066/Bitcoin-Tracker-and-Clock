@@ -1,4 +1,4 @@
-# Bitcoin Tracker and Clock v5
+# Bitcoin Tracker and Clock v5.3
 
 ![bitclock_ani (1)](https://github.com/CountZero1066/Bitcoin-Tracker-and-Clock/assets/32957102/baf71995-f1fb-4dd9-848c-cda52f265354)
 
@@ -10,6 +10,7 @@ This project is designed for use with the ESP8266 microcontroller and the AZDeli
 - Time and date display on the hour and every quarter-hour.
 - Adjustable display brightness with a pulsating effect.
 - Nighttime brightness reduction between 01:00 and 07:00.
+- Switch to BST (UTC + 1) from 1 April to 31 October.
   
 # Components
 - ESP8266 microcontroller.
